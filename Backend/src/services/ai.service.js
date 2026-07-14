@@ -117,7 +117,10 @@ async function generateInterviewReport({
 }
 
 async function generatePdfFromHtml(htmlContent) {
+  console.log("Chrome executable:", puppeteer.executablePath());
+
   const browser = await puppeteer.launch({
+    executablePath: puppeteer.executablePath(),
     headless: true,
     args: [
       "--no-sandbox",
@@ -136,7 +139,7 @@ async function generatePdfFromHtml(htmlContent) {
       waitUntil: "networkidle0",
     });
 
-    const pdfBuffer = await page.pdf({
+    return await page.pdf({
       format: "A4",
       printBackground: true,
       margin: {
@@ -146,8 +149,6 @@ async function generatePdfFromHtml(htmlContent) {
         right: "15mm",
       },
     });
-
-    return pdfBuffer;
   } finally {
     await browser.close();
   }
